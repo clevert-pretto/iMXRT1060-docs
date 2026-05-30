@@ -8,3 +8,4 @@ Welcome to my personal, register-level hardware exploration journal for the NXP 
 ## Structural Development Environment Summary
 - **Toolchain:** ARM GNU Toolchain (`arm-none-eabi`) cross-compiling via WSL2 inside a VS Code development loop.
 - **Linker Configuration:** Explicit custom FlexRAM structural partition managing Flash execution (XIP).
+

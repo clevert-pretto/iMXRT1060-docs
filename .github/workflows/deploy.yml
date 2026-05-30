@@ -24,7 +24,6 @@ jobs:
       - name: Checkout Docs Repo
         uses: actions/checkout@v4
 
-      # Simply deploys the pre-built pages folder instantly
       - name: Initialize Automated Pages Setup
         uses: actions/configure-pages@v5
 
