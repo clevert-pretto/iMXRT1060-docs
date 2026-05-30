@@ -1,0 +1,53 @@
+name: Deploy Consolidated Website Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Public Docs Repository
+        uses: actions/checkout@v4
+
+      # Re-creates the expected relative architecture so Doxygen scans the path framework safely
+      - name: Formulate Workspace Mock Framework
+        run: |
+          mkdir -p ../iMXRT1060_Baremetal/sdk/drivers/inc
+          mkdir -p ../iMXRT1060_Baremetal/sdk/drivers/src
+          mkdir -p ../iMXRT1060_Baremetal/projects
+
+      - name: Install System Documentation Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
+
+      # Explicitly forces the runner to execute doxygen INSIDE the folder where Doxyfile lives
+      - name: Compile Unified Doxygen Website
+        run: doxygen Doxyfile
+
+      - name: Initialize Automated Pages Setup
+        uses: actions/configure-pages@v5
+
+      - name: Compress Target Website Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './pages'
+
+      - name: Deploy Live onto Github Enterprise Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
