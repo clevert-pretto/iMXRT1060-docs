@@ -1,4 +1,4 @@
-name: Deploy Consolidated Website Pages
+name: Deploy Static Pages to GitHub Pages
 
 on:
   push:
@@ -21,25 +21,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Public Docs Repository
+      - name: Checkout Docs Repo
         uses: actions/checkout@v4
 
-      # Re-creates the expected relative architecture so Doxygen scans the path framework safely
-      - name: Formulate Workspace Mock Framework
-        run: |
-          mkdir -p ../iMXRT1060_Baremetal/sdk/drivers/inc
-          mkdir -p ../iMXRT1060_Baremetal/sdk/drivers/src
-          mkdir -p ../iMXRT1060_Baremetal/projects
-
-      - name: Install System Documentation Packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen graphviz
-
-      # Explicitly forces the runner to execute doxygen INSIDE the folder where Doxyfile lives
-      - name: Compile Unified Doxygen Website
-        run: doxygen Doxyfile
-
+      # Simply deploys the pre-built pages folder instantly
       - name: Initialize Automated Pages Setup
         uses: actions/configure-pages@v5
 
@@ -48,6 +33,6 @@ jobs:
         with:
           path: './pages'
 
-      - name: Deploy Live onto Github Enterprise Pages
+      - name: Deploy Live onto Github Pages
         id: deployment
         uses: actions/deploy-pages@v4
